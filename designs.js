@@ -97,7 +97,7 @@ const pxmaker = {
             grid.changeGridLines(grid.data.baseLineColor,grid.data.lineOpacityValue);
         });
 
-        grid.container.addEventListener('click', function(e) {
+        grid.container.addEventListener('mousedown', function(e) {
             if (grid.erase.checked !== true && grid.data.oldColor){
                 grid.data.color = grid.data.oldColor;
                 grid.data.oldColor = undefined;
