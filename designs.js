@@ -522,7 +522,6 @@ const grid = {
             arr[i].style.width = parseInt(arr[i].style.width) + num + 'px';
             arr[i].style.height = parseInt(arr[i].style.height) + num + 'px';
         }
-        
     },
     checkIsContaining: function(width, height) {
         var canvasContainer = document.getElementById('canvasWrapper');
@@ -760,6 +759,5 @@ pxmaker.init();
 // brush präzision/vorschau evtl. mit Farbe?
 // set document minwidth, minheight dynamically after grid resizing/creation
 // getColor fixen
-// alles kommentieren/refactoren 
-// auf github hosten
+// alles kommentieren/refactoren styleguide
 // ins Forum stellen
