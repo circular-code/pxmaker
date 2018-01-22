@@ -276,7 +276,7 @@ const grid = {
         }
     },
     makeAndSaveGrid: function(height, width, scale) {
-        if (grid.checkIsContaining(height * scale, width * scale)) {
+        if (grid.checkIsContaining(width * scale, height * scale)) {
             grid.makeGrid(height, width, scale);
             grid.save();
         }
@@ -451,8 +451,10 @@ const grid = {
         }
     },
     resize: function() {
-        this.makeGrid(this.data.height,this.data.width,this.data.scale,true);
-        this.drawFull(this.container,this.data.pixels);
+        if (grid.checkIsContaining(this.data.width * this.data.scale, this.data.height * this.data.scale)) {
+            this.makeGrid(this.data.height,this.data.width,this.data.scale,true);
+            this.drawFull(this.container,this.data.pixels);
+        }
     },
     createCanvas: function(visible) {
         canvas.newCanvas = new canvas.Create(this.data.height,this.data.width,this.data.pixels);
