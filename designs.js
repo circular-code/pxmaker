@@ -454,6 +454,7 @@ const grid = {
         if (grid.checkIsContaining(this.data.width * this.data.scale, this.data.height * this.data.scale)) {
             this.makeGrid(this.data.height,this.data.width,this.data.scale,true);
             this.drawFull(this.container,this.data.pixels);
+            grid.save(pxmaker.loadBarHtml.querySelector('.selected').dataset.loadBarIndex);
         }
     },
     createCanvas: function(visible) {
@@ -531,12 +532,11 @@ const grid = {
             num = 1;
         }
             
-
         var i = 0, arr = grid.container.querySelectorAll('td'); 
 
         for (i; i < arr.length; i++) {
-            arr[i].style.width = parseInt(arr[i].style.width) + num + 'px';
-            arr[i].style.height = parseInt(arr[i].style.height) + num + 'px';
+            grid.scaleInput.value = parseInt(arr[i].style.width);
+            arr[i].style.height  = arr[i].style.width = parseInt(arr[i].style.width) + num + 'px';
         }
     },
     checkIsContaining: function(width, height) {
