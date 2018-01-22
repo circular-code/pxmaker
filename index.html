@@ -292,20 +292,20 @@
             </div>
             <div class="toolContainer" id="canvasSettings">
                 <h2>Canvas Settings</h2>
-                <span><i class="fas fa-arrows-alt-v"></i></span>
+                <span title="width"><i class="fas fa-arrows-alt-v"></i></span>
                 <input type="number" id="gridHeight" name="gridHeight" min="1" value="16">
-                <span><i class="fas fa-arrows-alt-h"></i></span>
+                <span title="height"><i class="fas fa-arrows-alt-h"></i></span>
                 <input type="number" id="gridWidth" name="gridWidth" min="1" value="16">
-                <span><i class="fas fa-external-link"></i></span>
+                <span title="pixel scale 1: X"><i class="fas fa-external-link"></i></span>
                 <input type="number" id="pixelScale" name="pixelScale" min="1" value="20">
-                <span><i class="fas fa-paint-brush"></i></span>
+                <span title="brush size"><i class="fas fa-paint-brush"></i></span>
                 <input type="number" id="brushSize" name="brushSize" min="1" value="1">
                 <div id="presetButtons">
                     <button type="button" id="makeGridButton">new drawing</button>
-                    <button type="button" id="button16px">16px</button>
-                    <button type="button" id="button24px">24px</button>
-                    <button type="button" id="button32px">32px</button>
-                    <button type="button" id="button64px">64px</button>
+                    <button title="new drawing preset 16x16px" type="button" id="button16px">16px</button>
+                    <button title="new drawing preset 24x24px" type="button" id="button24px">24px</button>
+                    <button title="new drawing preset 32x32px" type="button" id="button32px">32px</button>
+                    <button title="new drawing preset 64x64px" type="button" id="button64px">64px</button>
                 </div>
             </div>
             <div class="toolContainer" id="tools">
@@ -313,31 +313,31 @@
                 <div class="modeWrapper">
                         <label for="draw">
                             <input type="radio" name="mode" id="draw" value="draw" checked/>
-                            <span><i class="fas fa-pencil"></i></span>
+                            <span title="draw"><i class="fas fa-pencil"></i></span>
                         </label>
                         <label for="getColor">
                             <input type="radio" name="mode" id="getColor" value="getColor"/>
-                            <span><i class="fas fa-eye-dropper"></i></span>
+                            <span title="eyedropper"><i class="fas fa-eye-dropper"></i></span>
                         </label>								
                         <label for="erase">
                             <input type="radio" name="mode" id="erase" value="erase" />
-                            <span><i class="fas fa-eraser"></i></span>
+                            <span title="eraser"><i class="fas fa-eraser"></i></span>
                         </label>
                         <label for="replace">
                             <input type="radio" name="mode" id="replace" value="replace" />
-                            <span><i class="fas fa-exchange"></i></span>
+                            <span title="replace color"><i class="fas fa-exchange"></i></span>
                         </label>
                     </div>
             </div>
             <div class="toolContainer" id="metaTools">
                 <h2>Canvas Tools</h2>
                 <div id="canvasTools">
-                    <button type="button" id="clearGrid"><i class="fal fa-table"></i></button>
-                    <button type="button" id="deleteButton"><i class="fas fa-trash-alt"></i></button>
-                    <button type="button" id="showOriginal"><i class="far fa-eye"></i></button>
-                    <a class="button" id="downloadButton"><i class="fas fa-download"></i></a>
-                    <button type="button" id="prev"><i class="fas fa-undo"></i></button>
-                    <button type="button" id="next"><i class="fas fa-redo"></i></button>
+                    <button title="clear grid" type="button" id="clearGrid"><i class="fal fa-table"></i></button>
+                    <button title="delete grid" type="button" id="deleteButton"><i class="fas fa-trash-alt"></i></button>
+                    <button title="show original (1:1 dimension)" type="button" id="showOriginal"><i class="far fa-eye"></i></button>
+                    <a title="download" class="button" id="downloadButton"><i class="fas fa-download"></i></a>
+                    <button title="undo last action" type="button" id="prev"><i class="fas fa-undo"></i></button>
+                    <button title="redo last action" type="button" id="next"><i class="fas fa-redo"></i></button>
                 </div>
             </div>  
             <div class="toolContainer" id="colors">
@@ -347,29 +347,26 @@
             </div>
             <div class="toolContainer" id="colorPalette">
                 <h2>Current Color</h2>
-                <div id="colorDisplay" draggable="true"></div>
-                <input type="text" id="hexInput" name="hexInput" value="#000000">
+                <div title="current color, drag from here to color palette" id="colorDisplay" draggable="true"></div>
+                <input title="input hex value here" type="text" id="hexInput" name="hexInput" value="#000000">
             </div>
             <div class="toolContainer" id="colorPalette">
                 <h2>Color Palette</h2>
-                <div id="palette"></div>
+                <div title="drag onto here to temporary save colors" id="palette"></div>
             </div>
             <div class="toolContainer" id="gridTools">
                 <h2>Grid Settings</h2>
-                <input type="checkbox" id="showGrid" checked>
-                <input type="color" id="gridLineColor" value="#000000">
-                <input type="range" min="2" max="100" id="gridLineOpacity" value="100">
+                <input title="show grid lines" type="checkbox" id="showGrid" checked>
+                <input title="change grid line color" type="color" id="gridLineColor" value="#000000">
+                <input title="change grid line opacity" type="range" min="2" max="100" id="gridLineOpacity" value="100">
             </div>
         </div><div id="canvasWrapper">
             <table id="pixelCanvas">
                 <tbody id="pixelCanvasBody"></tbody>
             </table>
-            <div id="originalSize"></div>
+            <div  title="original size image (1:1)" id="originalSize"></div>
         </div><div id="loadBar"></div><div id="hiddenCanvasWrapper"></div>
     </div>
-    
-    
-    
     <script defer src="designs.js"></script>
 </body>
 </html>
