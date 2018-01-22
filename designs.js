@@ -58,8 +58,16 @@ const pxmaker = {
         grid.heightInput.addEventListener('change', function() {
             grid.data.height = grid.heightInput.value; 
         });
+        grid.heightInput.addEventListener('keyup', function(e) {
+            if (e.keyCode === 13)
+                grid.resize();
+        });
         grid.widthInput.addEventListener('change', function() {
             grid.data.width = grid.widthInput.value;
+        });
+        grid.widthInput.addEventListener('keyup', function(e) {
+            if (e.keyCode === 13)
+                grid.resize();
         });
         grid.scaleInput.addEventListener('change', function() {
             grid.data.scale = grid.scaleInput.value;
@@ -342,10 +350,12 @@ const grid = {
     drawFull: function(target,data) {
 
         [].slice.call(target.children).forEach(function(row,rowindex) {
-            
-            [].slice.call(row.children).forEach(function(cell,cellindex) {
-                cell.style.backgroundColor = data[rowindex][cellindex] || 'transparent';
-            });
+            if(row){       
+                [].slice.call(row.children).forEach(function(cell,cellindex) {
+                    if (cell)
+                        cell.style.backgroundColor = data[rowindex] ? data[rowindex][cellindex] : 'transparent';
+                });
+            }
         });
     },
     getPixelData: function() {
@@ -436,21 +446,25 @@ const grid = {
         else {
             this.data = pxmaker.savedStates[index][pxmaker.savedStates[index].length - pxmaker.loadCounter ];
 
-            this.makeGrid(grid.data.height,grid.data.width,grid.data.scale,true);
-            this.drawFull(grid.container,grid.data.pixels);
+            this.makeGrid(this.data.height,this.data.width,this.data.scale,true);
+            this.drawFull(this.container,this.data.pixels);
         }
+    },
+    resize: function() {
+        this.makeGrid(this.data.height,this.data.width,this.data.scale,true);
+        this.drawFull(this.container,this.data.pixels);
     },
     createCanvas: function(visible) {
         canvas.newCanvas = new canvas.Create(this.data.height,this.data.width,this.data.pixels);
 
         if (visible) {
-            grid.originalSizeCanvas.appendChild(canvas.newCanvas.html);
-            grid.originalSizeCanvas.childNodes[0].id = "canvas";
+            this.originalSizeCanvas.appendChild(canvas.newCanvas.html);
+            this.originalSizeCanvas.childNodes[0].id = "canvas";
         }
         else {
-            grid.hiddenCanvasWrapper.innerHTML = "";
-            grid.hiddenCanvasWrapper.appendChild(canvas.newCanvas.html);
-            grid.hiddenCanvasWrapper.childNodes[0].id = "hiddenCanvas";
+            this.hiddenCanvasWrapper.innerHTML = "";
+            this.hiddenCanvasWrapper.appendChild(canvas.newCanvas.html);
+            this.hiddenCanvasWrapper.childNodes[0].id = "hiddenCanvas";
         }
     },
     showOriginal: function(targetNode) {
@@ -458,14 +472,14 @@ const grid = {
         this.createCanvas(true);
 
         targetNode.style.display = "none";
-        grid.showOriginalButton.className = "active";
-        grid.originalShown = true;
+        this.showOriginalButton.className = "active";
+        this.originalShown = true;
     },
     hideOriginal: function() {
         document.getElementById('pixelCanvas').style.display = 'table';
-        grid.originalSizeCanvas.innerHTML = "";
-        grid.showOriginalButton.className = "";
-        grid.originalShown = false;
+        this.originalSizeCanvas.innerHTML = "";
+        this.showOriginalButton.className = "";
+        this.originalShown = false;
     },
     createColorPicker: function(hue) {
         this.colorPicker.innerHTML = "";
@@ -745,19 +759,17 @@ const loadBar = {
 
 pxmaker.init();
 
-// TODO: 
-
-// resize?
+// TODO:
 // grid settings stylen
 // image load bar image sizes
 // canvas size nach zoomin/out undo redo
-// keyboard shortcuts for tools (e.g view original size, save etc)
 // bug delete delete new drawing --> beide Weiß anstatt nur eins
 // buttons disablen wenn nichts ausgewählt wurde
 // color picker verbessern / stylen /color preview & color ranges brightness / Farb vorschau
-// tooltips für alles inkl. shortcuts?
-// brush präzision/vorschau evtl. mit Farbe?
-// set document minwidth, minheight dynamically after grid resizing/creation
-// getColor fixen
 // alles kommentieren/refactoren styleguide
 // ins Forum stellen
+
+
+// brush präzision/vorschau evtl. mit Farbe?
+// keyboard shortcuts for tools (e.g view original size, save etc)
+// drag resize

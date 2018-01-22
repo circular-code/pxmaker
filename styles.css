@@ -356,6 +356,7 @@
   [type="reset"],
   [type="submit"] {
     -webkit-appearance: button; /* 2 */
+    font-family: sans-serif;
   }
   
   /**
