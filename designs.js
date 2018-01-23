@@ -71,6 +71,7 @@ const pxmaker = {
         });
         grid.scaleInput.addEventListener('change', function() {
             grid.data.scale = grid.scaleInput.value;
+            grid.resize();
         });
 
         grid.hueRange.addEventListener('change',function(e) {
@@ -446,6 +447,10 @@ const grid = {
         else {
             this.data = pxmaker.savedStates[index][pxmaker.savedStates[index].length - pxmaker.loadCounter ];
 
+            grid.heightInput.value = this.data.height;
+            grid.widthInput.value = this.data.width;
+            grid.scaleInput.value = this.data.scale;
+
             this.makeGrid(this.data.height,this.data.width,this.data.scale,true);
             this.drawFull(this.container,this.data.pixels);
         }
@@ -524,20 +529,25 @@ const grid = {
 
         var num;
         if (direction === "up") {
-            num = -1;
+            // num = -1;
+            grid.scaleInput.value = grid.data.scale = parseInt(grid.scaleInput.value) - 1 || 1;
         }
         else {
             if (!grid.checkIsContaining(grid.container.clientWidth, grid.container.clientHeight))
                 return;
-            num = 1;
+            // num = 1;
+            grid.scaleInput.value = grid.data.scale = parseInt(grid.scaleInput.value) + 1;
         }
             
-        var i = 0, arr = grid.container.querySelectorAll('td'); 
+        // var i = 0, arr = grid.container.querySelectorAll('td'); 
 
-        for (i; i < arr.length; i++) {
-            grid.scaleInput.value = parseInt(arr[i].style.width);
-            arr[i].style.height  = arr[i].style.width = parseInt(arr[i].style.width) + num + 'px';
-        }
+        // for (i; i < arr.length; i++) {
+        //     grid.scaleInput.value = grid.data.scale = parseInt(arr[i].style.width) || 1;
+        //     arr[i].style.height  = arr[i].style.width = parseInt(arr[i].style.width) + num + 'px';
+        // }
+        // this.save(pxmaker.loadBarHtml.querySelector('.selected').dataset.loadBarIndex);
+
+        grid.resize();
     },
     checkIsContaining: function(width, height) {
         var canvasContainer = document.getElementById('canvasWrapper');
@@ -770,8 +780,10 @@ pxmaker.init();
 // color picker verbessern / stylen /color preview & color ranges brightness / Farb vorschau
 // alles kommentieren/refactoren styleguide
 // ins Forum stellen
+// size limitations
 
 
 // brush präzision/vorschau evtl. mit Farbe?
 // keyboard shortcuts for tools (e.g view original size, save etc)
 // drag resize
+// redo undo skip scale changes
