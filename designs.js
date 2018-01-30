@@ -5,7 +5,7 @@ const pxmaker = {
         this.prepare();
         canvas.definePrototypes();
         loadBar.init();
-        grid.makeGrid(grid.data.height,grid.data.width,grid.data.scale);
+        grid.makeGrid(grid.data.height,grid.data.width,grid.scaleInput.value);
         if (!this.savedStates || this.savedStates.length === 0) {
             grid.save();
         }
@@ -49,8 +49,8 @@ const pxmaker = {
         grid.originalSizeCanvas = document.getElementById('originalSize');
         grid.hiddenCanvasWrapper = document.getElementById('hiddenCanvasWrapper');
 
-        grid.next = document.getElementById('next');
-        grid.prev = document.getElementById('prev');
+        grid.reDo = document.getElementById('reDo');
+        grid.unDo = document.getElementById('unDo');
 
         grid.palette = document.getElementById('palette');
 
@@ -147,34 +147,42 @@ const pxmaker = {
         });
 
         grid.makeGridButton.addEventListener('click', function() {
-            grid.makeAndSaveGrid(grid.data.width, grid.data.height, grid.data.scale);
+            grid.makeAndSaveGrid(grid.data.width, grid.data.height, grid.scaleInput.value);
         });
 
         grid.button16px.addEventListener('click', function() {
-            grid.makeAndSaveGrid(16, 16, grid.data.scale);
+            grid.data.width = 16;
+            grid.data.height = 16;
+            grid.makeAndSaveGrid(16, 16, grid.scaleInput.value);
         });
         grid.button24px.addEventListener('click', function() {
-            grid.makeAndSaveGrid(24, 24, grid.data.scale);
+            grid.data.width = 24;
+            grid.data.height = 24;
+            grid.makeAndSaveGrid(24, 24, grid.scaleInput.value);
         });
         grid.button32px.addEventListener('click', function() {
-            grid.makeAndSaveGrid(32, 32, grid.data.scale);
+            grid.data.width = 32;
+            grid.data.height = 32;
+            grid.makeAndSaveGrid(32, 32, grid.scaleInput.value);
         });
         grid.button64px.addEventListener('click', function() {
-            grid.makeAndSaveGrid(64, 64, grid.data.scale);
+            grid.data.width = 64;
+            grid.data.height = 64;
+            grid.makeAndSaveGrid(64, 64, grid.scaleInput.value);
         });
 
         grid.deleteButton.addEventListener('click', function() {
             grid.delete();
         });
 
-        grid.next.addEventListener('click', function() {
+        grid.reDo.addEventListener('click', function() {
             pxmaker.loadCounter--;
-            grid.load(pxmaker.loadBarHtml.querySelector('.selected').dataset.loadBarIndex);
+            grid.load(pxmaker.loadBarHtml.querySelector('.selected').dataset.loadBarIndex, true);
         });
 
-        grid.prev.addEventListener('click', function() {
+        grid.unDo.addEventListener('click', function() {
             pxmaker.loadCounter++;
-            grid.load(pxmaker.loadBarHtml.querySelector('.selected').dataset.loadBarIndex);
+            grid.load(pxmaker.loadBarHtml.querySelector('.selected').dataset.loadBarIndex, true);
         });
 
         grid.showOriginalButton.addEventListener('click', function() {
@@ -278,8 +286,17 @@ const grid = {
     },
     makeAndSaveGrid: function(height, width, scale) {
         if (grid.checkIsContaining(width * scale, height * scale)) {
+            if (pxmaker.loadCounter > 1) {
+                grid.save(pxmaker.loadBarHtml.querySelector('.selected').dataset.loadBarIndex);
+                pxmaker.loadCounter = 1;
+            }
+            grid.widthInput.value = width;
+            grid.heightInput.value = height;
             grid.makeGrid(height, width, scale);
             grid.save();
+        } else {
+            grid.data.width = grid.widthInput.value ;
+            grid.data.height = grid.heightInput.value;
         }
     },
     clearGrid: function() {
@@ -377,7 +394,6 @@ const grid = {
     save: function(index, clear) {
         this.getPixelData();
 
-        // FIXME: checken und berichtigen, funktioniert noch nicht 100%
         if (index){
             if (pxmaker.loadCounter > 1) {
                 pxmaker.savedStates[index][pxmaker.savedStates[index].length - pxmaker.loadCounter] = JSON.parse(JSON.stringify(this.data));
@@ -430,7 +446,7 @@ const grid = {
         }
 
     },
-    load: function(index) {
+    load: function(index, reDoOrUnDo) {
         if(pxmaker.savedStates.length <= 0){
             this.save();
         }
@@ -445,21 +461,24 @@ const grid = {
             }
         }
         else {
-            this.data = pxmaker.savedStates[index][pxmaker.savedStates[index].length - pxmaker.loadCounter ];
+            this.data = JSON.parse(JSON.stringify(pxmaker.savedStates[index][pxmaker.savedStates[index].length - pxmaker.loadCounter ]));
 
             grid.heightInput.value = this.data.height;
             grid.widthInput.value = this.data.width;
-            grid.scaleInput.value = this.data.scale;
+            if(!reDoOrUnDo)
+                grid.data.color = grid.colorDisplay.style.backgroundColor = this.data.color;
+            // grid.scaleInput.value = this.data.scale;
 
-            this.makeGrid(this.data.height,this.data.width,this.data.scale,true);
-            this.drawFull(this.container,this.data.pixels);
+            this.makeGrid(this.data.height, this.data.width, grid.scaleInput.value,true);
+            this.drawFull(this.container, this.data.pixels);
         }
     },
-    resize: function() {
+    resize: function(scale) {
         if (grid.checkIsContaining(this.data.width * this.data.scale, this.data.height * this.data.scale)) {
-            this.makeGrid(this.data.height,this.data.width,this.data.scale,true);
-            this.drawFull(this.container,this.data.pixels);
-            grid.save(pxmaker.loadBarHtml.querySelector('.selected').dataset.loadBarIndex);
+            this.makeGrid(this.data.height, this.data.width, grid.scaleInput.value,true);
+            this.drawFull(this.container, this.data.pixels);
+            if (!scale)
+                grid.save(pxmaker.loadBarHtml.querySelector('.selected').dataset.loadBarIndex);
         }
     },
     createCanvas: function(visible) {
@@ -527,7 +546,6 @@ const grid = {
     },
     handleScroll: function(direction) {
 
-        var num;
         if (direction === "up") {
             // num = -1;
             grid.scaleInput.value = grid.data.scale = parseInt(grid.scaleInput.value) - 1 || 1;
@@ -538,16 +556,8 @@ const grid = {
             // num = 1;
             grid.scaleInput.value = grid.data.scale = parseInt(grid.scaleInput.value) + 1;
         }
-            
-        // var i = 0, arr = grid.container.querySelectorAll('td'); 
 
-        // for (i; i < arr.length; i++) {
-        //     grid.scaleInput.value = grid.data.scale = parseInt(arr[i].style.width) || 1;
-        //     arr[i].style.height  = arr[i].style.width = parseInt(arr[i].style.width) + num + 'px';
-        // }
-        // this.save(pxmaker.loadBarHtml.querySelector('.selected').dataset.loadBarIndex);
-
-        grid.resize();
+        grid.resize(true);
     },
     checkIsContaining: function(width, height) {
         var canvasContainer = document.getElementById('canvasWrapper');
@@ -641,7 +651,7 @@ const canvas = {
         this.width = width;
         this.html.height = height * scale;
         this.html.width = width * scale;
-        this.pixels = pixels;
+        this.pixels = JSON.parse(JSON.stringify(pixels));
 
         for(let y=0; y<this.height; y++) {
                 
@@ -774,16 +784,15 @@ pxmaker.init();
 // TODO:
 // grid settings stylen
 // image load bar image sizes
-// canvas size nach zoomin/out undo redo
-// bug delete delete new drawing --> beide Weiß anstatt nur eins
 // buttons disablen wenn nichts ausgewählt wurde
+// redo no data to load wenn schonmal redone wurde ( letzter eintrag speichereintrag wird überschrieben?)
 // color picker verbessern / stylen /color preview & color ranges brightness / Farb vorschau
 // alles kommentieren/refactoren styleguide
 // ins Forum stellen
-// size limitations
 
 
 // brush präzision/vorschau evtl. mit Farbe?
 // keyboard shortcuts for tools (e.g view original size, save etc)
-// drag resize
-// redo undo skip scale changes
+// drag resize canvas
+// localStore size limitations exceeded (save steps as changes, not complete canvas)
+// size limitations when resizing
