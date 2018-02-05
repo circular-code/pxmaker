@@ -662,7 +662,7 @@ const canvas = {
                 
             for(let x=0; x<this.width; x++) {
 
-                this.context.fillStyle = this.pixels[x][y] || 'transparent';
+                this.context.fillStyle = this.pixels[y][x] || 'transparent';
                 this.context.fillRect(x * scale, y * scale, scale, scale);
             }  
         }
