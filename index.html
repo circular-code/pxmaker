@@ -343,7 +343,8 @@
             <div class="toolContainer" id="colors">
                 <h2>Color Picker</h2>
                 <div id="colorPickerHsl"></div>
-                <input type="range" min="0" max="300" id="hueRange" value="0">
+                <input type="range" orient="vertical" min="0" max="300" id="hueRange" value="0">
+                <div id="hueDisplay"></div>
             </div>
             <div class="toolContainer" id="colorPalette">
                 <h2>Current Color</h2>
@@ -353,10 +354,11 @@
             <div class="toolContainer" id="colorPalette">
                 <h2>Color Palette</h2>
                 <div title="drag onto here to temporary save colors" id="palette"></div>
+                <span id="paletteDescription">drag color here from current color</span>
             </div>
             <div class="toolContainer" id="gridTools">
                 <h2>Grid Settings</h2>
-                <input title="show grid lines" type="checkbox" id="showGrid" checked>
+                <button title="show grid lines" type="button" id="showGrid"><i class="far fa-eye"></i></button>
                 <input title="change grid line color" type="color" id="gridLineColor" value="#000000">
                 <input title="change grid line opacity" type="range" min="2" max="100" id="gridLineOpacity" value="100">
             </div>

@@ -28,7 +28,7 @@ const pxmaker = {
         grid.hueRange = document.getElementById('hueRange');
         grid.brushSize = document.getElementById('brushSize');
         grid.container = document.getElementById('pixelCanvasBody');
-        grid.showGridInput = document.getElementById('showGrid');
+        grid.showGridButton = document.getElementById('showGrid');
         grid.erase = document.getElementById('erase');
         grid.replaceInput = document.getElementById('replace');
         grid.getColor = document.getElementById('getColor');
@@ -83,27 +83,29 @@ const pxmaker = {
             grid.hexInput.value = grid.data.color = grid.colorDisplay.style.backgroundColor = utility.colorConverter(e.target.style.backgroundColor, "hex");
         });
 
-        grid.showGridInput.addEventListener('change', function(e) {
-            if (e.target.checked === true){
-                grid.changeGridLines(grid.data.baseLineColor,grid.data.lineOpacityValue);
-                grid.lineColorInput.disabled = false;
-                grid.lineOpacityInput.disabled = false;
-            }
-            else {
+        grid.showGridButton.addEventListener('click', function(e) {
+            if (e.target.className !== 'active'){
+                e.target.className = 'active';
                 grid.lineColorInput.disabled = true;
                 grid.lineOpacityInput.disabled = true;
                 grid.clearGridLines();
+            }
+            else {
+                grid.changeGridLines(grid.data.baseLineColor,grid.lineOpacityValue);
+                grid.lineColorInput.disabled = false;
+                grid.lineOpacityInput.disabled = false;
+                e.target.className = '';
             }
         });
         
         grid.lineColorInput.addEventListener('change', function(e) {
             grid.data.baseLineColor = e.target.value;
-            grid.changeGridLines(grid.data.baseLineColor,grid.data.lineOpacityValue);
+            grid.changeGridLines(grid.data.baseLineColor,grid.lineOpacityValue);
         });
 
         grid.lineOpacityInput.addEventListener('change', function(e) {
-            grid.data.lineOpacityValue = e.target.value/100;
-            grid.changeGridLines(grid.data.baseLineColor,grid.data.lineOpacityValue);
+            grid.lineOpacityValue = e.target.value/100;
+            grid.changeGridLines(grid.data.baseLineColor,grid.lineOpacityValue);
         });
 
         grid.container.addEventListener('mousedown', function(e) {
@@ -238,7 +240,7 @@ const pxmaker = {
         });
 
         grid.hexInput.addEventListener('keyup', function(e) {
-            if (utility.isValidHexColor(e.target.value))
+            if (utility.isHexColor(e.target.value))
                 grid.data.color = grid.colorDisplay.style.backgroundColor = e.target.value;
         });
     }
@@ -467,10 +469,11 @@ const grid = {
             grid.widthInput.value = this.data.width;
             if(!reDoOrUnDo)
                 grid.data.color = grid.colorDisplay.style.backgroundColor = this.data.color;
-            // grid.scaleInput.value = this.data.scale;
 
-            this.makeGrid(this.data.height, this.data.width, grid.scaleInput.value,true);
+            this.makeGrid(this.data.height, this.data.width, this.data.scale ,true);
             this.drawFull(this.container, this.data.pixels);
+            grid.scaleInput.value = this.data.scale;
+
         }
     },
     resize: function(scale) {
@@ -559,14 +562,16 @@ const grid = {
 
         grid.resize(true);
     },
-    checkIsContaining: function(width, height) {
+    checkIsContaining: function(width, height, silent) {
         var canvasContainer = document.getElementById('canvasWrapper');
         if (canvasContainer.clientWidth - 30 <= width) {
-            alert('Canvas will be too wide');
+            if(!silent)
+                alert('Canvas will be too wide');
             return false;
         }
         if (canvasContainer.clientHeight - 30 <= height) {
-            alert ('Canvas will be too high');
+            if(!silent)
+                alert ('Canvas will be too high');
             return false;
         }
         return true;
@@ -657,7 +662,7 @@ const canvas = {
                 
             for(let x=0; x<this.width; x++) {
 
-                this.context.fillStyle = this.pixels[y][x] || 'transparent';
+                this.context.fillStyle = this.pixels[x][y] || 'transparent';
                 this.context.fillRect(x * scale, y * scale, scale, scale);
             }  
         }
@@ -757,7 +762,8 @@ const loadBar = {
                 div.classList = 'canvasWrapper';
                 div.dataset.loadBarIndex = index;
 
-                loadBar.canvas = new canvas.Create(canvasData.height,canvasData.width,canvasData.pixels,2);
+                loadBar.canvas = new canvas.Create(canvasData.height,canvasData.width,canvasData.pixels, canvasData.width > 90 ? 90 / canvasData.width : 2);
+                loadBar.canvas.html.style.display = canvasData.width > 100 ?  'block' : 'inline-block';
                 loadBar.canvas.html.addEventListener('click',function() {
 
                     pxmaker.loadCounter = 1;
@@ -782,17 +788,15 @@ const loadBar = {
 pxmaker.init();
 
 // TODO:
-// grid settings stylen
-// image load bar image sizes
-// buttons disablen wenn nichts ausgewählt wurde
-// redo no data to load wenn schonmal redone wurde ( letzter eintrag speichereintrag wird überschrieben?)
-// color picker verbessern / stylen /color preview & color ranges brightness / Farb vorschau
 // alles kommentieren/refactoren styleguide
 // ins Forum stellen
-
 
 // brush präzision/vorschau evtl. mit Farbe?
 // keyboard shortcuts for tools (e.g view original size, save etc)
 // drag resize canvas
 // localStore size limitations exceeded (save steps as changes, not complete canvas)
 // size limitations when resizing
+// buttons disablen wenn nichts ausgewählt wurde
+// redo no data to load wenn schonmal redone wurde ( letzter eintrag speichereintrag wird überschrieben?)
+// color picker verbessern / stylen /color preview & color ranges brightness / Farb vorschau
+//
