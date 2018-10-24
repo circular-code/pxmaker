@@ -882,6 +882,7 @@ const loadBar = {
 pxmaker.init();
 
 // TODO:
+// fix bugs, achieve cross browser compatibility
 // brush präzision/vorschau evtl. mit Farbe?
 // keyboard shortcuts for tools (e.g view original size, save etc)
 // drag resize canvas?
